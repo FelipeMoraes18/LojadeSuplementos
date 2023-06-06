@@ -13,26 +13,31 @@ public class Main {
             System.out.println("Por favor, informe seus dados para concluirmos seu cadastro e prosseguirmos com sua compra!:");
 
             System.out.print("Nome completo: ");
-            String nome = input.nextLine();
+             input.nextLine();
 
             System.out.print("CPF: ");
-            String cpf = input.nextLine();
+             input.nextLine();
 
             System.out.print("E-mail: ");
-            String email = input.nextLine();
+             input.nextLine();
 
             System.out.print("Telefone: ");
-            String telefone = input.nextLine();
+             input.nextLine();
         
-            CadastroCliente cliente = new CadastroCliente(nome, cpf, email, telefone);
+            CadastroCliente cliente = new CadastroClienteBuilder()
+            .nome(input.nextLine())
+            .cpf(input.nextLine())
+            .email(input.nextLine())
+            .telefone(input.nextLine())
+            .build();
 
             System.out.println();
             System.out.println("Cadastro realizado com sucesso!");
             System.out.println();
             ArrayList<ProdutoSuplemento> produtos = new ArrayList<>();
             Estoque estoque = new Estoque();
-            ProdutoSuplemento produto1 = new WheyProtein("Whey Protein", 99.90, "Suplemento proteico", 100);
-            ProdutoSuplemento produto2 = new Termogenico("Termogênico", 79.90, "Suplemento que acelera o metabolismo", 50);
+            ProdutoSuplemento produto1 = new WheyProtein("Whey Protein", 100.00, "Suplemento proteico", 100);
+            ProdutoSuplemento produto2 = new Termogenico("Termogênico", 80.00, "Suplemento que acelera o metabolismo", 50);
             ProdutoSuplemento produto3 = new Glutamina("Glutamina", 60.00,"importantíssima para o metabolismo de um corpo saudável", 30);
             ProdutoSuplemento produto4 = new Creatina("Creatina", 75.00, "recurso ergogênico eficaz devido auxílio no ganho de massa muscular e melhora do desempenho físico", 50);
             estoque.adicionarProduto(produto1);
@@ -80,18 +85,28 @@ public class Main {
 
                             System.out.print("Escolha o produto que deseja comprar: ");
                             int produtoEscolhido = input.nextInt();
-                            input.nextLine();
+                            input.nextLine(); // consome a quebra de linha
 
                             ProdutoSuplemento produto = produtos.get(produtoEscolhido - 1);
 
                             System.out.print("Quantidade desejada: ");
                             int quantidade = input.nextInt();
-                            input.nextLine();
+                            input.nextLine(); // consome a quebra de linha
 
                             System.out.print("Digite a região (ZN ou ZS): ");
                             String regiao = input.nextLine();
 
-                            Frete frete = new Frete(regiao);
+                            CalculadoraFrete calculadoraFrete;
+
+                            if (regiao.equals("ZN")) {
+                            calculadoraFrete = new CalculadoraFreteZN();
+                            }   else if (regiao.equals("ZS")) {
+                            calculadoraFrete = new CalculadoraFreteZS();
+                            }   else {
+                            System.out.println("Região não identificada");
+                                continue;
+                        }
+                            Frete frete = new Frete(calculadoraFrete);
                             double valorFrete = frete.calcularFrete();
 
                             if (valorFrete < 0) {
